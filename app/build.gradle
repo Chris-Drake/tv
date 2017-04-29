@@ -1,6 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.squareup.sqldelight'
 
 android {
   compileSdkVersion 25
@@ -22,6 +23,10 @@ android {
 
   sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
+  }
+
+  packagingOptions {
+    exclude 'META-INF/rxjava.properties'
   }
 }
 
@@ -58,6 +63,8 @@ dependencies {
   compile "com.squareup.okhttp3:logging-interceptor:3.6.0"
   compile "com.squareup.picasso:picasso:2.5.2"
   compile "com.jakewharton.picasso:picasso2-okhttp3-downloader:1.1.0"
+
+  compile "com.squareup.sqlbrite:sqlbrite:1.1.1"
 
   def butterknife_version = '8.5.1'
   compile "com.jakewharton:butterknife:$butterknife_version"
