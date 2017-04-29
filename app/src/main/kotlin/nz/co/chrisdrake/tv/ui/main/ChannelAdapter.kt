@@ -1,5 +1,6 @@
 package nz.co.chrisdrake.tv.ui.main
 
+import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
@@ -41,14 +42,22 @@ class ChannelAdapter(
       val channel = channels[position]
       logo.contentDescription = channel.name
       picasso.load(channel.logoImageUrl).fit().into(logo)
+      adapter.listings = channel.listings
     }
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     @BindView(R.id.logo) lateinit var logo: ImageView
+    @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
+
+    val adapter = ListingsAdapter()
 
     init {
       ButterKnife.bind(this, itemView)
+      recyclerView.layoutManager = LinearLayoutManager(itemView.context).apply {
+        initialPrefetchItemCount = 3
+      }
+      recyclerView.adapter = adapter
     }
   }
 }
