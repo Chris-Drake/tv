@@ -13,7 +13,7 @@ import javax.inject.Singleton
 ) : ResultUseCase<ChannelListings> {
 
   override fun buildObservable(): Observable<Result<ChannelListings>> {
-    return listingsRepository.listings()
+    return listingsRepository.listings
         .flatMap {
           val now = ZonedDateTime.now()
           Observable.fromIterable(it)
