@@ -16,6 +16,7 @@ fun OpgResponse.transform(): List<Channel> {
         listings = programs.data.map {
           with(it) {
             Program(
+                id = hashCode(),
                 title = title,
                 episodeTitle = episodeTitle,
                 synopsis = synopsis,

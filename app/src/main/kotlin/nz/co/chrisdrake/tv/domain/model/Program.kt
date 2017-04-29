@@ -4,6 +4,7 @@ import org.threeten.bp.Duration
 import org.threeten.bp.ZonedDateTime
 
 data class Program(
+    val id: Int,
     val title: String,
     val episodeTitle: String?,
     val synopsis: String?,
