@@ -11,6 +11,7 @@ import javax.inject.Inject
 class MainActivity : AppCompatActivity() {
 
   @Inject lateinit var store: MainStore
+  @Inject lateinit var actionCreator: MainActionCreator
 
   private val disposables = CompositeDisposable()
 
@@ -21,6 +22,11 @@ class MainActivity : AppCompatActivity() {
     disposables += store.subscribe {
       setUiModel(it)
     }
+  }
+
+  override fun onStart() {
+    super.onStart()
+    actionCreator.fetchListings()
   }
 
   override fun onDestroy() {
