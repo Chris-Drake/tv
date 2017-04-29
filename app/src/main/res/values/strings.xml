@@ -1,3 +1,5 @@
 <resources>
   <string name="app_name">What\'s on TV</string>
+
+  <string name="error_retry">Retry</string>
 </resources>
