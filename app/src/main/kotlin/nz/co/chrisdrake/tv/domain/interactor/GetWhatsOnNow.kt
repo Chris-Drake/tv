@@ -17,7 +17,6 @@ import javax.inject.Singleton
         .flatMap {
           val now = ZonedDateTime.now()
           Observable.fromIterable(it)
-              .filter { !it.isRegional }
               .map { it.withListingsAfter(now) }
               .map { it.copy(listings = it.listings.take(3)) }
               .toList()

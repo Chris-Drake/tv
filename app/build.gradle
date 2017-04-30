@@ -50,6 +50,7 @@ dependencies {
   compile "io.reactivex:rxkotlin:2.0.0-RC1"
   compile "com.jakewharton.rxrelay2:rxrelay:2.0.0"
   compile "com.jakewharton.rx:replaying-share-kotlin:2.0.0"
+  compile "com.github.akarnokd:rxjava2-interop:0.9.6"
 
   def retrofit_version = '2.2.0'
   compile "com.squareup.retrofit2:retrofit:$retrofit_version"

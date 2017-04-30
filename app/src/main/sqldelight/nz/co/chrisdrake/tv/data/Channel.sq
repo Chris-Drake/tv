@@ -11,3 +11,8 @@ INSERT OR IGNORE INTO channel(channelId, name, visible, listOrder) VALUES (?, ?,
 
 updateName:
 UPDATE channel SET name = ? WHERE channelId = ?;
+
+selectAll:
+SELECT *
+FROM channel
+ORDER BY listOrder DESC;
