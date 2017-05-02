@@ -1,7 +1,9 @@
 package nz.co.chrisdrake.tv.ui.channels
 
+import android.support.v4.view.MotionEventCompat
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
@@ -11,7 +13,9 @@ import butterknife.ButterKnife
 import nz.co.chrisdrake.tv.R
 import nz.co.chrisdrake.tv.data.model.ChannelRow
 
-class ChannelsAdapter : RecyclerView.Adapter<ChannelsAdapter.ViewHolder>() {
+class ChannelsAdapter(
+    val dragStartCallback: (viewHolder: ChannelsAdapter.ViewHolder) -> Unit
+) : RecyclerView.Adapter<ChannelsAdapter.ViewHolder>() {
 
   var channels: List<ChannelRow> = emptyList()
     set(value) {
@@ -45,10 +49,18 @@ class ChannelsAdapter : RecyclerView.Adapter<ChannelsAdapter.ViewHolder>() {
         visible.setImageResource(R.drawable.ic_hidden)
         visible.contentDescription = "Toggle visibility on"
       }
+
+      reorder.setOnTouchListener { _, event ->
+        if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
+          dragStartCallback.invoke(this)
+        }
+        false
+      }
     }
   }
 
   class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    @BindView(R.id.reorder) lateinit var reorder: View
     @BindView(R.id.name) lateinit var name: TextView
     @BindView(R.id.visible) lateinit var visible: ImageView
 

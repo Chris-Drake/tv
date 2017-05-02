@@ -3,7 +3,7 @@ CREATE TABLE channel (
   channelId INTEGER NOT NULL UNIQUE ON CONFLICT FAIL,
   name TEXT NOT NULL,
   visible INTEGER AS Boolean NOT NULL DEFAULT 1,
-  listOrder INTEGER NOT NULL UNIQUE ON CONFLICT FAIL
+  listOrder INTEGER NOT NULL
 );
 
 insertOrIgnore:
@@ -11,6 +11,12 @@ INSERT OR IGNORE INTO channel(channelId, name, visible, listOrder) VALUES (?, ?,
 
 updateName:
 UPDATE channel SET name = ? WHERE channelId = ?;
+
+incrementListOrders:
+UPDATE channel SET listOrder = listOrder + ? WHERE listOrder BETWEEN ? AND ?;
+
+updateListOrder:
+UPDATE channel SET listOrder = ? WHERE channelId = ?;
 
 selectAll:
 SELECT *

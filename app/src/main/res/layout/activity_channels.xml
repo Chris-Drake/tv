@@ -6,8 +6,6 @@
   android:id="@+id/recycler_view"
   android:layout_width="match_parent"
   android:layout_height="match_parent"
-  android:paddingTop="4dp"
-  android:paddingBottom="4dp"
   android:clipToPadding="false"
   app:layoutManager="android.support.v7.widget.LinearLayoutManager"
   tools:listitem="@layout/list_item_channel_settings"
