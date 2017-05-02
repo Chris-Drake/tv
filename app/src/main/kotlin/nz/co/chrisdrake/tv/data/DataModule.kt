@@ -14,6 +14,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import rx.schedulers.Schedulers
 import timber.log.Timber
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 @Module(includes = arrayOf(ApiModule::class)) class DataModule {
@@ -43,6 +44,7 @@ import javax.inject.Singleton
 
     return OkHttpClient.Builder()
         .addInterceptor(loggingInterceptor)
+        .readTimeout(30, TimeUnit.SECONDS)
         .cache(cache)
         .build()
   }
