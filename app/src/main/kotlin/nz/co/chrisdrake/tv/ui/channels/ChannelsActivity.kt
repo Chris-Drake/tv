@@ -21,10 +21,14 @@ class ChannelsActivity : AppCompatActivity() {
 
   @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
 
-  private val adapter: ChannelsAdapter = ChannelsAdapter(dragStartCallback = {
-    itemTouchHelper.startDrag(it)
-  })
+  private val adapter: ChannelsAdapter
   private val disposables = CompositeDisposable()
+
+  init {
+    adapter = ChannelsAdapter(
+        toggleVisibilityListener = { dataService.toggleVisibility(it.channelId) },
+        dragStartListener = { itemTouchHelper.startDrag(it) })
+  }
 
   override fun onCreate(savedInstanceState: Bundle?) {
     AndroidInjection.inject(this)

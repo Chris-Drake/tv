@@ -12,6 +12,9 @@ INSERT OR IGNORE INTO channel(channelId, name, visible, listOrder) VALUES (?, ?,
 updateName:
 UPDATE channel SET name = ? WHERE channelId = ?;
 
+toggleVisibility:
+UPDATE channel SET visible = NOT visible WHERE channelId = ?;
+
 incrementListOrders:
 UPDATE channel SET listOrder = listOrder + ? WHERE listOrder BETWEEN ? AND ?;
 

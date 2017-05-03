@@ -16,6 +16,7 @@ import javax.inject.Singleton
     private val briteDatabase: BriteDatabase
 ) {
   private val writableDatabase by lazy { briteDatabase.writableDatabase }
+  private val toggleVisibility by lazy { ToggleVisibility(writableDatabase) }
   private val incrementListOrders by lazy { IncrementListOrders(writableDatabase) }
   private val updateListOrder by lazy { UpdateListOrder(writableDatabase) }
 
@@ -42,6 +43,12 @@ import javax.inject.Singleton
       }
 
       transaction.markSuccessful();
+    }
+  }
+
+  fun toggleVisibility(channelId: Long) {
+    briteDatabase.bindAndExecute(toggleVisibility) {
+      bind(channelId)
     }
   }
 

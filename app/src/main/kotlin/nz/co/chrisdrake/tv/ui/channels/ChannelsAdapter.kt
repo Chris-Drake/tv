@@ -14,7 +14,8 @@ import nz.co.chrisdrake.tv.R
 import nz.co.chrisdrake.tv.data.model.ChannelRow
 
 class ChannelsAdapter(
-    val dragStartCallback: (viewHolder: ChannelsAdapter.ViewHolder) -> Unit
+    val toggleVisibilityListener: (ChannelRow) -> Unit,
+    val dragStartListener: (viewHolder: ChannelsAdapter.ViewHolder) -> Unit
 ) : RecyclerView.Adapter<ChannelsAdapter.ViewHolder>() {
 
   var channels: List<ChannelRow> = emptyList()
@@ -50,9 +51,11 @@ class ChannelsAdapter(
         visible.contentDescription = "Toggle visibility on"
       }
 
+      visible.setOnClickListener { toggleVisibilityListener.invoke(channels[position]) }
+
       reorder.setOnTouchListener { _, event ->
         if (MotionEventCompat.getActionMasked(event) == MotionEvent.ACTION_DOWN) {
-          dragStartCallback.invoke(this)
+          dragStartListener.invoke(this)
         }
         false
       }
