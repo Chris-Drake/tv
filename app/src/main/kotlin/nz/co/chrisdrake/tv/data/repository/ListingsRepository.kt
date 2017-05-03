@@ -18,6 +18,7 @@ import javax.inject.Singleton
 ) {
   private val channelPreferences by lazy {
     dataService.channels
+        .filter { it.isNotEmpty() }
         .firstOrError()
         .map { it.associateBy { it.channelId.toInt() } }
         .toObservable()
