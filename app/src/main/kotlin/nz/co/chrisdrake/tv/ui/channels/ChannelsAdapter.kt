@@ -11,14 +11,14 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import nz.co.chrisdrake.tv.R
-import nz.co.chrisdrake.tv.data.model.ChannelRow
+import nz.co.chrisdrake.tv.data.model.ChannelData
 
 class ChannelsAdapter(
-    val toggleVisibilityListener: (ChannelRow) -> Unit,
+    val toggleVisibilityListener: (ChannelData) -> Unit,
     val dragStartListener: (viewHolder: ChannelsAdapter.ViewHolder) -> Unit
 ) : RecyclerView.Adapter<ChannelsAdapter.ViewHolder>() {
 
-  var channels: List<ChannelRow> = emptyList()
+  var channels: List<ChannelData> = emptyList()
     set(value) {
       field = value
       notifyDataSetChanged()

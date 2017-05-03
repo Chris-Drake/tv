@@ -2,7 +2,7 @@ package nz.co.chrisdrake.tv.data.model
 
 import nz.co.chrisdrake.tv.data.ChannelModel
 
-data class ChannelRow(
+data class ChannelData(
     private val _id: Long,
     val channelId: Long,
     val name: String,
@@ -11,8 +11,8 @@ data class ChannelRow(
 ) : ChannelModel {
 
   companion object {
-    val FACTORY: ChannelModel.Factory<ChannelRow> = ChannelModel.Factory(ChannelModel.Creator { _id, channelId, name, visible, listOrder ->
-      ChannelRow(_id = _id, channelId = channelId, name = name, isVisible = visible, listOrder = listOrder)
+    val FACTORY: ChannelModel.Factory<ChannelData> = ChannelModel.Factory(ChannelModel.Creator { _id, channelId, name, visible, listOrder ->
+      ChannelData(_id = _id, channelId = channelId, name = name, isVisible = visible, listOrder = listOrder)
     })
   }
 

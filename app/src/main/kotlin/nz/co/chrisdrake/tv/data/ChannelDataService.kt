@@ -7,7 +7,7 @@ import io.reactivex.Observable
 import nz.co.chrisdrake.tv.data.ChannelModel.*
 import nz.co.chrisdrake.tv.data.api.model.Channel
 import nz.co.chrisdrake.tv.data.api.model.ChannelDetails
-import nz.co.chrisdrake.tv.data.model.ChannelRow
+import nz.co.chrisdrake.tv.data.model.ChannelData
 import nz.co.chrisdrake.tv.util.bindAndExecute
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -20,13 +20,13 @@ import javax.inject.Singleton
   private val incrementListOrders by lazy { IncrementListOrders(writableDatabase) }
   private val updateListOrder by lazy { UpdateListOrder(writableDatabase) }
 
-  val channels: Observable<List<ChannelRow>> by lazy {
-    val selectAll = ChannelRow.FACTORY.selectAll()
+  val channels: Observable<List<ChannelData>> by lazy {
+    val selectAll = ChannelData.FACTORY.selectAll()
 
     RxJavaInterop.toV2Observable(
         briteDatabase
             .createQuery(selectAll.tables, selectAll.statement)
-            .mapToList(ChannelRow.FACTORY.selectAllMapper()::map))
+            .mapToList(ChannelData.FACTORY.selectAllMapper()::map))
         .compose(ReplayingShare.instance())
   }
 

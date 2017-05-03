@@ -7,7 +7,7 @@ import nz.co.chrisdrake.tv.data.ChannelDataService
 import nz.co.chrisdrake.tv.data.api.ApiService
 import nz.co.chrisdrake.tv.data.api.model.OpgResponse
 import nz.co.chrisdrake.tv.data.api.model.mapper.transform
-import nz.co.chrisdrake.tv.data.model.ChannelRow
+import nz.co.chrisdrake.tv.data.model.ChannelData
 import nz.co.chrisdrake.tv.domain.model.Channel
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -30,7 +30,7 @@ import javax.inject.Singleton
       .compose(ReplayingShare.instance())
 
   private fun filterAndSortChannels() =
-      BiFunction<List<Channel>, Map<Int, ChannelRow>, List<Channel>> { channels, preferences ->
+      BiFunction<List<Channel>, Map<Int, ChannelData>, List<Channel>> { channels, preferences ->
         channels
             .filter { preferences.getValue(it.id).isVisible }
             .sortedWith(Comparator { (id), (id2) ->
