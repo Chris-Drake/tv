@@ -20,14 +20,15 @@ import javax.inject.Singleton
     dataService.channels
         .firstOrError()
         .map { it.associateBy { it.channelId.toInt() } }
+        .toObservable()
   }
 
   val listings: Observable<List<Channel>> = apiService.listings()
       .doOnSuccess { (channels) -> dataService.insertOrUpdate(channels.data) }
       .map(OpgResponse::transform)
-      .zipWith(channelPreferences, filterAndSortChannels())
       .toObservable()
       .compose(ReplayingShare.instance())
+      .withLatestFrom(channelPreferences, filterAndSortChannels())
 
   private fun filterAndSortChannels() =
       BiFunction<List<Channel>, Map<Int, ChannelData>, List<Channel>> { channels, preferences ->
