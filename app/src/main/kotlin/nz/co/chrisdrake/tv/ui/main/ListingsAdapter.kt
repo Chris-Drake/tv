@@ -11,7 +11,9 @@ import nz.co.chrisdrake.tv.R
 import nz.co.chrisdrake.tv.domain.model.Program
 import org.threeten.bp.format.DateTimeFormatter
 
-class ListingsAdapter : RecyclerView.Adapter<ListingsAdapter.ViewHolder>() {
+class ListingsAdapter(
+    private val onItemChangeTransitionStartListener: () -> Unit
+) : RecyclerView.Adapter<ListingsAdapter.ViewHolder>() {
 
   private val timeFormatter = DateTimeFormatter.ofPattern("h:mm a")
 
@@ -20,6 +22,8 @@ class ListingsAdapter : RecyclerView.Adapter<ListingsAdapter.ViewHolder>() {
       field = value
       notifyDataSetChanged()
     }
+
+  private var expandedSelection = RecyclerView.NO_POSITION
 
   init {
     setHasStableIds(true)
@@ -32,7 +36,7 @@ class ListingsAdapter : RecyclerView.Adapter<ListingsAdapter.ViewHolder>() {
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)
         .inflate(R.layout.list_item_program, parent, false)
-    return ViewHolder(view)
+    return ViewHolder(view, onClickListener = { _, position -> onItemClick(position) });
   }
 
   override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -41,16 +45,31 @@ class ListingsAdapter : RecyclerView.Adapter<ListingsAdapter.ViewHolder>() {
       time.text = listing.startTime.format(timeFormatter)
       title.text = listing.title
       description.text = listing.synopsis
+      description.visibility = if (expandedSelection == position) View.VISIBLE else View.GONE
     }
   }
 
-  class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+  private fun onItemClick(position: Int) {
+    val previousSelection = expandedSelection;
+    expandedSelection = if (position == expandedSelection) RecyclerView.NO_POSITION else position
+    onItemChangeTransitionStartListener.invoke()
+
+    if (previousSelection != RecyclerView.NO_POSITION) {
+      notifyItemChanged(previousSelection)
+    }
+    notifyItemChanged(position)
+  }
+
+  class ViewHolder(
+      itemView: View, onClickListener: (View, Int) -> Unit
+  ) : RecyclerView.ViewHolder(itemView) {
     @BindView(R.id.time) lateinit var time: TextView
     @BindView(R.id.title) lateinit var title: TextView
     @BindView(R.id.description) lateinit var description: TextView
 
     init {
       ButterKnife.bind(this, itemView)
+      itemView.setOnClickListener { onClickListener.invoke(itemView, adapterPosition) }
     }
   }
 }
