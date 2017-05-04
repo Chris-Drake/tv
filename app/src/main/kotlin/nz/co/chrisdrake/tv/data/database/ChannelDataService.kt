@@ -1,13 +1,12 @@
-package nz.co.chrisdrake.tv.data
+package nz.co.chrisdrake.tv.data.database
 
 import com.jakewharton.rx.ReplayingShare
 import com.squareup.sqlbrite.BriteDatabase
 import hu.akarnokd.rxjava.interop.RxJavaInterop
 import io.reactivex.Observable
-import nz.co.chrisdrake.tv.data.ChannelModel.*
 import nz.co.chrisdrake.tv.data.api.model.Channel
 import nz.co.chrisdrake.tv.data.api.model.ChannelDetails
-import nz.co.chrisdrake.tv.data.model.ChannelData
+import nz.co.chrisdrake.tv.data.database.ChannelModel.*
 import nz.co.chrisdrake.tv.util.bindAndExecute
 import javax.inject.Inject
 import javax.inject.Singleton

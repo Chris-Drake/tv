@@ -8,6 +8,7 @@ import com.squareup.sqlbrite.SqlBrite
 import dagger.Module
 import dagger.Provides
 import nz.co.chrisdrake.tv.data.api.ApiModule
+import nz.co.chrisdrake.tv.data.database.DatabaseOpenHelper
 import okhttp3.Cache
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

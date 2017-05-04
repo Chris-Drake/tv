@@ -11,7 +11,7 @@ import android.widget.TextView
 import butterknife.BindView
 import butterknife.ButterKnife
 import nz.co.chrisdrake.tv.R
-import nz.co.chrisdrake.tv.data.model.ChannelData
+import nz.co.chrisdrake.tv.data.database.ChannelData
 
 class ChannelsAdapter(
     val toggleVisibilityListener: (ChannelData) -> Unit,

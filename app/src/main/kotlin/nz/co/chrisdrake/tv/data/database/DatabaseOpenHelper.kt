@@ -1,4 +1,4 @@
-package nz.co.chrisdrake.tv.data
+package nz.co.chrisdrake.tv.data.database
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase

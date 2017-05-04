@@ -12,7 +12,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
 import nz.co.chrisdrake.tv.R
-import nz.co.chrisdrake.tv.data.ChannelDataService
+import nz.co.chrisdrake.tv.data.database.ChannelDataService
 import javax.inject.Inject
 
 class ChannelsActivity : AppCompatActivity() {

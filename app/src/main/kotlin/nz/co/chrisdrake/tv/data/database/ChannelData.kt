@@ -1,7 +1,6 @@
-package nz.co.chrisdrake.tv.data.model
+package nz.co.chrisdrake.tv.data.database
 
-import nz.co.chrisdrake.tv.data.ChannelModel
-import nz.co.chrisdrake.tv.data.ChannelModel.Factory
+import nz.co.chrisdrake.tv.data.database.ChannelModel.Factory
 
 data class ChannelData(
     private val _id: Long,
