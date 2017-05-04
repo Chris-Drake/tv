@@ -40,10 +40,18 @@ class ChannelsActivity : AppCompatActivity() {
     recyclerView.setHasFixedSize(true)
     recyclerView.addItemDecoration(DividerItemDecoration(this, DividerItemDecoration.VERTICAL))
     recyclerView.adapter = adapter
+  }
 
+  override fun onStart() {
+    super.onStart()
     disposables += dataService.channels
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { adapter.channels = it }
+  }
+
+  override fun onStop() {
+    super.onStop()
+    disposables.clear()
   }
 
   private val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -61,9 +69,4 @@ class ChannelsActivity : AppCompatActivity() {
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
   })
-
-  override fun onDestroy() {
-    super.onDestroy()
-    disposables.clear()
-  }
 }

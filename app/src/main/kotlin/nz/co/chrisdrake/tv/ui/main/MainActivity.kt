@@ -46,14 +46,15 @@ class MainActivity : AppCompatActivity() {
     swipeRefreshLayout.setOnRefreshListener { attemptRefresh() }
     recyclerView.setHasFixedSize(true)
     recyclerView.adapter = adapter
-
-    disposables += store.subscribe {
-      setUiModel(it)
-    }
   }
 
   override fun onStart() {
     super.onStart()
+
+    disposables += store.subscribe {
+      setUiModel(it)
+    }
+
     attemptRefresh()
   }
 
@@ -64,8 +65,8 @@ class MainActivity : AppCompatActivity() {
     return true
   }
 
-  override fun onDestroy() {
-    super.onDestroy()
+  override fun onStop() {
+    super.onStop()
     disposables.clear()
   }
 
