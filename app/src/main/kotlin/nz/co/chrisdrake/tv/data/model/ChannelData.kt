@@ -1,6 +1,7 @@
 package nz.co.chrisdrake.tv.data.model
 
 import nz.co.chrisdrake.tv.data.ChannelModel
+import nz.co.chrisdrake.tv.data.ChannelModel.Factory
 
 data class ChannelData(
     private val _id: Long,
@@ -11,9 +12,7 @@ data class ChannelData(
 ) : ChannelModel {
 
   companion object {
-    val FACTORY: ChannelModel.Factory<ChannelData> = ChannelModel.Factory(ChannelModel.Creator { _id, channelId, name, visible, listOrder ->
-      ChannelData(_id = _id, channelId = channelId, name = name, isVisible = visible, listOrder = listOrder)
-    })
+    val FACTORY: Factory<ChannelData> = Factory(::ChannelData)
   }
 
   override fun _id() = _id
