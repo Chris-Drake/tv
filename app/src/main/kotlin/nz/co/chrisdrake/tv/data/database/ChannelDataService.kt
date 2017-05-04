@@ -78,7 +78,7 @@ import javax.inject.Singleton
   }
 
   private fun InsertOrIgnore.bind(details: ChannelDetails, listOrder: Int) = with(details) {
-    bind(channelId.toLong(), name, !isRegional, listOrder.toLong())
+    bind(channelId.toLong(), name, !isRegional && channelNumber < 50, listOrder.toLong())
   }
 
   private fun UpdateName.bind(details: ChannelDetails) = with(details) {
