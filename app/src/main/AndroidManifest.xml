@@ -12,7 +12,7 @@
     android:theme="@style/AppTheme">
 
     <activity
-      android:name=".ui.main.MainActivity"
+      android:name=".ui.listings.ListingsActivity"
       android:launchMode="singleTop">
       <intent-filter>
         <action android:name="android.intent.action.MAIN"/>
@@ -23,6 +23,6 @@
     <activity
       android:name=".ui.channels.ChannelsActivity"
       android:label="@string/channels_title"
-      android:parentActivityName=".ui.main.MainActivity"/>
+      android:parentActivityName=".ui.listings.ListingsActivity"/>
   </application>
 </manifest>

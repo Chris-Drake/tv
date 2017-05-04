@@ -1,4 +1,4 @@
-package nz.co.chrisdrake.tv.ui.main
+package nz.co.chrisdrake.tv.ui.listings
 
 import android.content.Intent
 import android.os.Bundle
@@ -20,10 +20,10 @@ import nz.co.chrisdrake.tv.ui.channels.ChannelsActivity
 import timber.log.Timber
 import javax.inject.Inject
 
-class MainActivity : AppCompatActivity() {
+class ListingsActivity : AppCompatActivity() {
 
-  @Inject lateinit var store: MainStore
-  @Inject lateinit var actionCreator: MainActionCreator
+  @Inject lateinit var store: ListingsStore
+  @Inject lateinit var actionCreator: ListingsActionCreator
   @Inject lateinit var picasso: Picasso
 
   @BindView(R.id.container) lateinit var viewContainer: ViewGroup
@@ -79,7 +79,7 @@ class MainActivity : AppCompatActivity() {
     return super.onOptionsItemSelected(item)
   }
 
-  private fun setUiModel(model: MainUiModel) {
+  private fun setUiModel(model: ListingsUiModel) {
     Timber.d("$model")
 
     swipeRefreshLayout.isRefreshing = model.inProgress

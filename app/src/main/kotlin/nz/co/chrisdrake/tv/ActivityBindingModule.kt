@@ -8,15 +8,15 @@ import dagger.android.AndroidInjector
 import dagger.multibindings.IntoMap
 import nz.co.chrisdrake.tv.ui.channels.ChannelsActivity
 import nz.co.chrisdrake.tv.ui.channels.ChannelsActivityComponent
-import nz.co.chrisdrake.tv.ui.main.MainActivity
-import nz.co.chrisdrake.tv.ui.main.MainActivityComponent
+import nz.co.chrisdrake.tv.ui.listings.ListingsActivity
+import nz.co.chrisdrake.tv.ui.listings.ListingsActivityComponent
 
 @Module(subcomponents = arrayOf(
-    MainActivityComponent::class, ChannelsActivityComponent::class)
+    ListingsActivityComponent::class, ChannelsActivityComponent::class)
 )
 abstract class ActivityBindingModule {
-  @Binds @IntoMap @ActivityKey(MainActivity::class)
-  abstract fun bindMainActivityFactory(builder: MainActivityComponent.Builder)
+  @Binds @IntoMap @ActivityKey(ListingsActivity::class)
+  abstract fun bindListingsActivityFactory(builder: ListingsActivityComponent.Builder)
       : AndroidInjector.Factory<out Activity>
 
   @Binds @IntoMap @ActivityKey(ChannelsActivity::class)

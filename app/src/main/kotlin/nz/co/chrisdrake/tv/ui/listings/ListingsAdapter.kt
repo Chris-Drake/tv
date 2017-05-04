@@ -1,4 +1,4 @@
-package nz.co.chrisdrake.tv.ui.main
+package nz.co.chrisdrake.tv.ui.listings
 
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
