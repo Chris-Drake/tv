@@ -1,5 +1,6 @@
 package nz.co.chrisdrake.tv.ui.listings
 
+import android.arch.lifecycle.*
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
@@ -13,24 +14,22 @@ import butterknife.BindView
 import butterknife.ButterKnife
 import com.squareup.picasso.Picasso
 import dagger.android.AndroidInjection
-import io.reactivex.disposables.CompositeDisposable
-import io.reactivex.rxkotlin.plusAssign
 import nz.co.chrisdrake.tv.R
 import nz.co.chrisdrake.tv.ui.channels.ChannelsActivity
 import timber.log.Timber
 import javax.inject.Inject
 
-class ListingsActivity : AppCompatActivity() {
+class ListingsActivity : AppCompatActivity(), LifecycleRegistryOwner, Observer<ListingsUiModel> {
 
-  @Inject lateinit var store: ListingsStore
-  @Inject lateinit var actionCreator: ListingsActionCreator
+  @Inject lateinit var viewModelFactory: ViewModelProvider.Factory
   @Inject lateinit var picasso: Picasso
 
   @BindView(R.id.container) lateinit var viewContainer: ViewGroup
   @BindView(R.id.refresh_layout) lateinit var swipeRefreshLayout: SwipeRefreshLayout
   @BindView(R.id.recycler_view) lateinit var recyclerView: RecyclerView
 
-  private val disposables = CompositeDisposable()
+  private val lifecycleRegistry = LifecycleRegistry(this)
+  private lateinit var viewModel: ListingsViewModel
   private lateinit var adapter: ChannelAdapter
   private var filterItem: MenuItem? = null
   private var errorSnackbar: Snackbar? = null
@@ -41,6 +40,9 @@ class ListingsActivity : AppCompatActivity() {
     setContentView(R.layout.activity_main)
     ButterKnife.bind(this)
 
+    viewModel = ViewModelProviders.of(this, viewModelFactory).get(ListingsViewModel::class.java)
+    viewModel.getState().observe(this, this)
+
     adapter = ChannelAdapter(picasso)
     swipeRefreshLayout.setColorSchemeResources(R.color.primary)
     swipeRefreshLayout.setOnRefreshListener { attemptRefresh() }
@@ -50,11 +52,6 @@ class ListingsActivity : AppCompatActivity() {
 
   override fun onStart() {
     super.onStart()
-
-    disposables += store.subscribe {
-      setUiModel(it)
-    }
-
     attemptRefresh()
   }
 
@@ -65,11 +62,6 @@ class ListingsActivity : AppCompatActivity() {
     return true
   }
 
-  override fun onStop() {
-    super.onStop()
-    disposables.clear()
-  }
-
   override fun onOptionsItemSelected(item: MenuItem): Boolean {
     if (item == filterItem) {
       startActivity(Intent(this, ChannelsActivity::class.java))
@@ -78,6 +70,8 @@ class ListingsActivity : AppCompatActivity() {
 
     return super.onOptionsItemSelected(item)
   }
+
+  override fun getLifecycle() = lifecycleRegistry
 
   private fun setUiModel(model: ListingsUiModel) {
     Timber.d("$model")
@@ -95,7 +89,11 @@ class ListingsActivity : AppCompatActivity() {
     }
   }
 
+  override fun onChanged(model: ListingsUiModel?) {
+    model?.let { setUiModel(it) }
+  }
+
   private fun attemptRefresh() {
-    actionCreator.fetchListings()
+    viewModel.refreshListings()
   }
 }
