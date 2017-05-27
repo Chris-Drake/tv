@@ -30,7 +30,7 @@ class ChannelsAdapter(
 
   override fun getItemCount() = channels.size
 
-  override fun getItemId(position: Int) = channels[position].channelId
+  override fun getItemId(position: Int) = channels[position].channelId.toLong()
 
   override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
     val view = LayoutInflater.from(parent.context)

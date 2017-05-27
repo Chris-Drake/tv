@@ -1,87 +1,65 @@
 package nz.co.chrisdrake.tv.data.database
 
+import android.arch.persistence.room.RoomDatabase
 import com.jakewharton.rx.ReplayingShare
-import com.squareup.sqlbrite.BriteDatabase
-import hu.akarnokd.rxjava.interop.RxJavaInterop
-import io.reactivex.Observable
+import io.reactivex.Flowable
 import nz.co.chrisdrake.tv.data.api.model.Channel
-import nz.co.chrisdrake.tv.data.api.model.ChannelDetails
-import nz.co.chrisdrake.tv.data.database.ChannelModel.*
-import nz.co.chrisdrake.tv.util.bindAndExecute
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton class ChannelDataService @Inject constructor(
-    private val briteDatabase: BriteDatabase
+    private val appDatabase: AppDatabase,
+    private val channelDao: ChannelDao
 ) {
-  private val writableDatabase by lazy { briteDatabase.writableDatabase }
-  private val toggleVisibility by lazy { ToggleVisibility(writableDatabase) }
-  private val incrementListOrders by lazy { IncrementListOrders(writableDatabase) }
-  private val updateListOrder by lazy { UpdateListOrder(writableDatabase) }
-
-  val channels: Observable<List<ChannelData>> by lazy {
-    val selectAll = ChannelData.FACTORY.selectAll()
-
-    RxJavaInterop.toV2Observable(
-        briteDatabase
-            .createQuery(selectAll.tables, selectAll.statement)
-            .mapToList(ChannelData.FACTORY.selectAllMapper()::map))
-        .compose(ReplayingShare.instance())
+  val channels: Flowable<List<ChannelData>> by lazy {
+    channelDao.selectAll().compose(ReplayingShare.instance())
   }
 
   fun insertOrUpdate(channels: List<Channel>) {
-    val insertOrIgnore = InsertOrIgnore(writableDatabase)
-    val updateName by lazy { UpdateName(writableDatabase) }
-
-    briteDatabase.newTransaction().use { transaction ->
+    appDatabase.newTransaction {
       channels.forEachIndexed { index, (_, details, _) ->
-        val inserted = briteDatabase.bindAndExecute(insertOrIgnore) { bind(details, index) } != -1L
+        val channelData = with(details) {
+          ChannelData(
+              channelId = channelId,
+              name = name,
+              isVisible = !isRegional && channelNumber < 50,
+              listOrder = index)
+        }
+
+        val inserted = channelDao.insertOrIgnore(channelData) != -1L
         if (!inserted) {
-          briteDatabase.bindAndExecute(updateName) { bind(details) }
+          channelDao.updateName(details.name, details.channelId)
         }
       }
 
-      transaction.markSuccessful();
+      setTransactionSuccessful()
     }
   }
 
-  fun toggleVisibility(channelId: Long) {
-    briteDatabase.bindAndExecute(toggleVisibility) {
-      bind(channelId)
-    }
+  fun toggleVisibility(channelId: Int) {
+    channelDao.toggleVisibility(channelId)
   }
 
-  fun moveItem(channelId: Long, fromPosition: Int, toPosition: Int) {
-    briteDatabase.newTransaction().use { transaction ->
+  fun moveItem(channelId: Int, fromPosition: Int, toPosition: Int) {
+    appDatabase.newTransaction {
       if (toPosition > fromPosition) {
-        incrementListOrders(-1, fromPosition + 1..toPosition)
+        channelDao.incrementListOrders(-1, fromPosition + 1, toPosition)
       } else {
-        incrementListOrders(1, toPosition..fromPosition - 1)
+        channelDao.incrementListOrders(1, toPosition, fromPosition - 1)
       }
 
-      updateListOrder(channelId = channelId, listOrder = toPosition)
+      channelDao.updateListOrder(channelId = channelId, listOrder = toPosition)
 
-      transaction.markSuccessful()
+      setTransactionSuccessful()
     }
   }
 
-  private fun incrementListOrders(amount: Int, range: IntRange) {
-    briteDatabase.bindAndExecute(incrementListOrders) {
-      bind(amount.toDouble(), range.first.toLong(), range.last.toLong())
+  private fun RoomDatabase.newTransaction(transaction: RoomDatabase.() -> Unit) {
+    beginTransaction();
+    try {
+      transaction()
+    } finally {
+      endTransaction();
     }
-  }
-
-  private fun updateListOrder(channelId: Long, listOrder: Int) {
-    briteDatabase.bindAndExecute(updateListOrder) {
-      bind(listOrder.toLong(), channelId)
-    }
-  }
-
-  private fun InsertOrIgnore.bind(details: ChannelDetails, listOrder: Int) = with(details) {
-    bind(channelId.toLong(), name, !isRegional && channelNumber < 50, listOrder.toLong())
-  }
-
-  private fun UpdateName.bind(details: ChannelDetails) = with(details) {
-    bind(name, channelId.toLong())
   }
 }

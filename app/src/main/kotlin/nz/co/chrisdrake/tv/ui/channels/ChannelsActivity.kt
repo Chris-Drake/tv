@@ -7,10 +7,12 @@ import android.support.v7.widget.RecyclerView
 import android.support.v7.widget.helper.ItemTouchHelper
 import butterknife.BindView
 import butterknife.ButterKnife
+import com.jakewharton.rxrelay2.PublishRelay
 import dagger.android.AndroidInjection
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.plusAssign
+import io.reactivex.schedulers.Schedulers
 import nz.co.chrisdrake.tv.R
 import nz.co.chrisdrake.tv.data.database.ChannelDataService
 import javax.inject.Inject
@@ -23,10 +25,13 @@ class ChannelsActivity : AppCompatActivity() {
 
   private val adapter: ChannelsAdapter
   private val disposables = CompositeDisposable()
+  private val changeRequestRelay = PublishRelay.create<ChannelChange>()
 
   init {
     adapter = ChannelsAdapter(
-        toggleVisibilityListener = { dataService.toggleVisibility(it.channelId) },
+        toggleVisibilityListener = {
+          changeRequestRelay.accept(ChannelChange.ToggleVisibility(it.channelId))
+        },
         dragStartListener = { itemTouchHelper.startDrag(it) })
   }
 
@@ -47,11 +52,22 @@ class ChannelsActivity : AppCompatActivity() {
     disposables += dataService.channels
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe { adapter.channels = it }
+
+    disposables += changeRequestRelay
+        .observeOn(Schedulers.io())
+        .subscribe(this::onChannelChangeRequested)
   }
 
   override fun onStop() {
     super.onStop()
     disposables.clear()
+  }
+
+  private fun onChannelChangeRequested(change: ChannelChange) {
+    when (change) {
+      is ChannelChange.ToggleVisibility -> dataService.toggleVisibility(change.channelId)
+      is ChannelChange.Move -> dataService.moveItem(change.channelId, change.from, change.to)
+    }
   }
 
   private val itemTouchHelper = ItemTouchHelper(object : ItemTouchHelper.Callback() {
@@ -63,10 +79,15 @@ class ChannelsActivity : AppCompatActivity() {
       val fromPosition = viewHolder.adapterPosition
       val toPosition = target.adapterPosition
       val channel = adapter.channels[fromPosition]
-      dataService.moveItem(channel.channelId, fromPosition, toPosition)
+      changeRequestRelay.accept(ChannelChange.Move(channel.channelId, fromPosition, toPosition))
       return true
     }
 
     override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {}
   })
+
+  private sealed class ChannelChange {
+    data class ToggleVisibility(val channelId: Int) : ChannelChange()
+    data class Move(val channelId: Int, val from: Int, val to: Int) : ChannelChange()
+  }
 }

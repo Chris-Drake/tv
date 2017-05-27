@@ -20,7 +20,7 @@ import javax.inject.Singleton
     dataService.channels
         .filter { it.isNotEmpty() }
         .firstOrError()
-        .map { it.associateBy { it.channelId.toInt() } }
+        .map { it.associateBy { it.channelId } }
         .toObservable()
   }
 
@@ -36,7 +36,7 @@ import javax.inject.Singleton
         channels
             .filter { preferences.getValue(it.id).isVisible }
             .sortedWith(Comparator { (id), (id2) ->
-              (preferences.getValue(id).listOrder - preferences.getValue(id2).listOrder).toInt()
+              preferences.getValue(id).listOrder - preferences.getValue(id2).listOrder
             })
       }
 }

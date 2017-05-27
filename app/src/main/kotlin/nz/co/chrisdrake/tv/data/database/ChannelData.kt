@@ -1,22 +1,12 @@
 package nz.co.chrisdrake.tv.data.database
 
-import nz.co.chrisdrake.tv.data.database.ChannelModel.Factory
+import android.arch.persistence.room.ColumnInfo
+import android.arch.persistence.room.Entity
+import android.arch.persistence.room.PrimaryKey
 
-data class ChannelData(
-    private val _id: Long,
-    val channelId: Long,
+@Entity(tableName = "channel") data class ChannelData(
+    @PrimaryKey val channelId: Int,
     val name: String,
-    val isVisible: Boolean,
-    val listOrder: Long
-) : ChannelModel {
-
-  companion object {
-    val FACTORY: Factory<ChannelData> = Factory(::ChannelData)
-  }
-
-  override fun _id() = _id
-  override fun channelId() = channelId
-  override fun name() = name
-  override fun visible() = isVisible
-  override fun listOrder() = listOrder
-}
+    @ColumnInfo(name = "visible") val isVisible: Boolean,
+    val listOrder: Int
+)
